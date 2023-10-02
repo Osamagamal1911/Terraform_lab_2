@@ -13,18 +13,12 @@ pipeline {
         choice(
             name: 'ENVIRONMENT',
             choices: ['dev', 'prod'],
-            description: 'Select the environment to apply Terraform code'
+            description: 'Select the environment'
         )
     }
 
     stages {
-        stage('Checkout Code') {
-            steps {
-            
-                git branch: 'main',
-                url: 'https://github.com/Mostafaa-Elkhouly/Terraform.git'
-            }
-        }
+        
         stage('initialize Terraform') {
             steps {
                 script {
@@ -38,13 +32,13 @@ pipeline {
                     def env = params.ENVIRONMENT
                     echo "Applying Terraform for ${env} environment"
                         
-                    // Depending on the environment, run the appropriate Terraform commands
+
                     if (env == 'dev') {
                         sh 'terraform workspace select dev'
-                        sh 'terraform apply --var-file=dev.terraform_lab2vars -auto-approve'
+                        sh 'terraform apply --var-file=dev.tfvars -auto-approve'
                     } else if (env == 'prod') {
                         sh 'terraform workspace select prod'
-                        sh 'terraform apply --var-file=prod.terraform_lab2vars -auto-approve'
+                        sh 'terraform apply --var-file=prod.tfvars -auto-approve'
                     }
                 }
             }
